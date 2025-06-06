@@ -3,7 +3,7 @@ import "ldrs/react/Helix.css";
 
 export function Loader({
   size = "100",
-  color = "#ffa116",
+  color = "#ffa41d",
   ...props
 }: React.ComponentProps<typeof Helix>) {
   return (

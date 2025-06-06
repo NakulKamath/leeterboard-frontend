@@ -11,8 +11,8 @@ export function LeeterboardLogo() {
   if (!show) return null;
 
   return (
-    <div className="bg-primary text-primary-foreground flex size-6 items-center justify-center rounded-md w-40">
-      Leeterboard.xyz
+    <div className="bg-[#ffa41d] text-primary-foreground flex size-6 items-center justify-center rounded-md w-40">
+      leeterboard.xyz
     </div>
   );
 }

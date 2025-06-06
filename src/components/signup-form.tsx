@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { doCreateUserWithEmailAndPassword, doSignInWithGoogle, doSendEmailVerification } from "@/components/FirebaseAuth"
 import { useAuth } from "@/components/AuthContext";
 import { Loader } from "@/components/Loader";
+import UserAPI from "@/api/user";
 
 export function SignupForm({
   className,
@@ -25,19 +26,29 @@ export function SignupForm({
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loaderState, setLoaderState] = useState<boolean>(true);
-  const [justLoggedIn, setJustLoggedIn] = useState<boolean>(false);
   
-  const { userLoggedIn } = useAuth();
+  const { user, userLoggedIn } = useAuth();
 
   useEffect(() => {
     setTimeout(() => {
       setLoaderState(false);
     }, 500);
-    if (!justLoggedIn && userLoggedIn) {
-      toast("You are already logged in!");
-      router.push("/profile");
-    }
-  }, [justLoggedIn, userLoggedIn, router]);
+
+    const checkUserStatus = async () => {
+      if (userLoggedIn && user?.uid) {
+        const linked = await UserAPI.getUserStatus(user.uid);
+        if (linked.found) {
+          toast("You are already signed up!");
+          router.push("/dashboard");
+        } else {
+          toast("You are already signed up, please link your account");
+          router.push("/link");
+        }
+      }
+    };
+
+    checkUserStatus();
+  }, [user, userLoggedIn, router]);
 
   const handleSignUp = async (email: string, password: string) => {
     if (!email || !password) {
@@ -49,7 +60,6 @@ export function SignupForm({
     try {
       await doCreateUserWithEmailAndPassword(email, password);
       await doSendEmailVerification();
-      setJustLoggedIn(true);
       toast.success("Successfully signed up! Please check your email for a verification link.");
       router.push("/link");
     } catch (error: unknown) {
@@ -72,7 +82,6 @@ export function SignupForm({
     setIsLoading(true);
     try {
       await doSignInWithGoogle();
-      setJustLoggedIn(true);
       toast.success("Successfully signed up!");
       router.push("/link");
     } catch (error: unknown) {
@@ -173,10 +182,10 @@ export function SignupForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+      {/* <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
-      </div>
+      </div> */}
     </div>
   )
 }

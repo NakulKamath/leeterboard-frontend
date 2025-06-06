@@ -32,10 +32,10 @@ export function LoginForm({
     setTimeout(() => {
       setLoaderState(false);
     }, 500);
-    if (userLoggedIn && user?.tenantId) {
+    if (userLoggedIn && user?.displayName) {
       toast("You are already logged in!");
-      router.push("/profile");
-    } else if (userLoggedIn && !user?.tenantId) {
+      router.push("/dashboard");
+    } else if (userLoggedIn && !user?.displayName) {
       toast("Please link your account")
       router.push("/link");
     }
@@ -51,7 +51,6 @@ export function LoginForm({
     try {
       await doSignInWithEmailAndPassword(email, password);
       toast.success("Successfully signed in!");
-      router.push("/profile?new");
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error("Error!", {description : error.message || "Failed to sign in. Please try again."});
@@ -68,7 +67,6 @@ export function LoginForm({
     try {
       await doSignInWithGoogle();
       toast.success("Successfully signed in with Google!");
-      router.push("/profile?new");
     } catch (error: unknown) {
       if (error instanceof Error) {
         toast.error("Error!", {description : error.message || "Failed to sign in. Please try again."});
@@ -173,10 +171,10 @@ export function LoginForm({
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+      {/* <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
-      </div>
+      </div> */}
     </div>
   )
 }

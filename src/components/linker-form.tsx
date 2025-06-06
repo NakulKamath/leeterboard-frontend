@@ -12,144 +12,120 @@ import { Label } from "@/components/ui/label"
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "@/components/FirebaseAuth"
 import { useAuth } from "@/components/AuthContext";
 import { Loader } from "@/components/Loader";
+import UserAPI from "@/api/user";
 
 export function LinkerForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const router = useRouter();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>("");
   const [loaderState, setLoaderState] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
     
-  const { user } = useAuth();
+  const { user, userLoggedIn } = useAuth();
   
   useEffect(() => {
     setTimeout(() => {
       setLoaderState(false);
     }, 500);
-    if (!user?.tenantId) {
-      toast("Please link your account")
-      router.push("/link");
-    }
-  }, [user, router]);
+    const checkUserStatus = async () => {
+      if (userLoggedIn && user?.uid) {
+        const linked = await UserAPI.getUserStatus(user.uid);
+        if (linked.found) {
+          toast("You account is already linked!");
+          router.push("/dashboard");
+        }
+      }
+    };
 
-  const handleSignIn = async (email: string, password: string) => {
-    if (!email || !password) {
-      toast.error("Please fill in all fields");
+    checkUserStatus();
+  }, [userLoggedIn, user, router]);
+
+  const handleSubmit = async (username: string) => {
+    setIsLoading(true);
+    if (!user?.emailVerified) {
+      toast.error("Please verify your email before linking your account.");
+      setIsLoading(false);
       return;
     }
-
-    setIsLoading(true);
     try {
-      await doSignInWithEmailAndPassword(email, password);
-      toast.success("Successfully signed in!");
-      router.push("/profile?new");
+      if (!username) {
+        toast.error("Please enter your LeetCode ID");
+        return;
+      }
+      await UserAPI.registerUser(user.uid, username);
+      toast.success("Account linked successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error("Error!", {description : error.message || "Failed to sign in. Please try again."});
+        if (error.message.includes("403")) {
+          toast.error("Please set your LeetCode status to the code above.");
+        }
       } else {
-        toast.error("Error!", {description : "An unexpected error occurred. Please try again."});
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
-  const handleGoogleSignIn = async () => {
-    setIsLoading(true);
-    try {
-      await doSignInWithGoogle();
-      toast.success("Successfully signed in with Google!");
-      router.push("/profile?new");
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        toast.error("Error!", {description : error.message || "Failed to sign in. Please try again."});
-      } else {
-        toast.error("Error!", {description : "An unexpected error occurred. Please try again."});
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    handleSignIn(email, password);
-  };
-
-    if (loaderState) {
-      return <Loader />
-    }
+  if (loaderState) {
+    return <Loader />
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
         <CardHeader className="text-center">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
+          <CardTitle className="text-xl">Register your LeetCode account!</CardTitle>
+          <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"></div>
           <CardDescription>
-            Login with Google account
+            1) Go to your{" "}
+            <a
+              href="https://leetcode.com/profile/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-primary"
+            >
+              LeetCode Profile
+            </a>{" "}
+            page<br />
+            2) Copy paste this code 
+            <span
+              className="cursor-pointer text-[#ffa41d] hover:underline"
+              title="Click to copy"
+              onClick={() => {
+                if (user?.uid) {
+                  navigator.clipboard.writeText(user.uid);
+                  toast.success("Copied to clipboard!");
+                }
+              }}
+            >
+              {user?.uid ? ` ${user.uid} ` : ""}
+            </span><br/>to your Summary section<br />
+            3) Enter your LeetCode ID below
+            3) Click the button link your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            handleSubmit(username);
+          }}>
             <div className="grid gap-6">
-              <div className="flex flex-col gap-4">
-                <Button 
-                  type="button"
-                  variant="outline" 
-                  className="w-full" 
-                  onClick={handleGoogleSignIn}
-                  disabled={isLoading}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 mr-2">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  {isLoading ? "Signing in..." : "Login with Google"}
-                </Button>
-              </div>
-              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-                <span className="bg-card text-muted-foreground relative z-10 px-2">
-                  Or continue with
-                </span>
-              </div>
+              <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t"></div>
               <div className="grid gap-6">
                 <div className="grid gap-3">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="username">LeetCode ID</Label>
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="leeter@code.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    id="username"
+                    placeholder="leetercoder"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     disabled={isLoading}
                     required
-                  />
-                </div>
-                <div className="grid gap-3">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
-                    <a
-                      href="#"
-                      className="ml-auto text-sm underline-offset-4 hover:underline"
-                    >
-                      Forgot your password?
-                    </a>
-                  </div>
-                  <Input 
-                    id="password" 
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={isLoading}
-                    required 
                   />
                 </div>
                 <Button 
@@ -157,23 +133,17 @@ export function LinkerForm({
                   className="w-full"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Signing in..." : "Login"}
+                  {isLoading ? "Linking..." : "Link Account"}
                 </Button>
-              </div>
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="/sign-up" className="underline underline-offset-4">
-                  Sign up
-                </a>
               </div>
             </div>
           </form>
         </CardContent>
       </Card>
-      <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
+      {/* <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
         and <a href="#">Privacy Policy</a>.
-      </div>
+      </div> */}
     </div>
   )
 }

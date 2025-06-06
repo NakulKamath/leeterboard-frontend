@@ -1,38 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { useAuth } from '@/components/AuthContext';
-import { Loader } from "@/components/Loader";
+import { LeeterboardLogo } from "@/components/LeeterboardLogo";
+import Link from "next/link";
+import { LinkerForm } from "@/components/linker-form";
 
-const LinkPage = () => {
-  const { user, userLoggedIn } = useAuth();
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-      if (!userLoggedIn) {
-        toast.error("You must be logged in to access this page.");
-        console.log(!!user)
-        console.log(user)
-      }
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, [user, userLoggedIn]);
-
-  if (loading) {
-    return (
-      <Loader />
-    )
-  }
-
-  if (!userLoggedIn) {
-    return null;
-  }
-
-  return <div>Welcome to the Link Page!</div>;
+const LinkerPage = () => {
+  return (
+    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
+      <div className="flex w-full max-w-sm flex-col gap-6 pb-[10vh]">
+          <Link href="/" className="flex items-center gap-2 self-center font-medium">
+            <LeeterboardLogo />
+          </Link>
+          <LinkerForm/>
+      </div>
+    </div>
+  );
 }
 
-export default LinkPage;
+export default LinkerPage;
