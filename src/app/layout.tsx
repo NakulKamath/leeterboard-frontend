@@ -26,7 +26,7 @@ export default function RootLayout({
         className={`${atkinsonHyperlegible.variable} antialiased`}
       >
         <AuthProvider>
-          <Toaster />
+          <Toaster className="select-none" position="top-center"/>
           {children}
         </AuthProvider>
       </body>

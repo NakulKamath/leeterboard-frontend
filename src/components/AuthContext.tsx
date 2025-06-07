@@ -24,6 +24,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(user);
       setUserLoggedIn(!!user);
       setLoading(false);
+      if (user) {
+        localStorage.setItem('uuid', user.uid);
+      }
     });
     return unsubscribe;
   }, []);

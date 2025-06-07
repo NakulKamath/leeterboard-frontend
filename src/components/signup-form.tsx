@@ -16,6 +16,7 @@ import { doCreateUserWithEmailAndPassword, doSignInWithGoogle, doSendEmailVerifi
 import { useAuth } from "@/components/AuthContext";
 import { Loader } from "@/components/Loader";
 import UserAPI from "@/api/user";
+import Link from "next/link";
 
 export function SignupForm({
   className,
@@ -173,10 +174,10 @@ export function SignupForm({
                 </Button>
               </div>
               <div className="text-center text-sm">
-                Have an account?{" "}
-                <a href="/sign-in" className="underline underline-offset-4">
+                <Link href="/sign-in" className="underline underline-offset-4">
                   Sign in
-                </a>
+                </Link>
+                {" "}if you already have an account.
               </div>
             </div>
           </form>

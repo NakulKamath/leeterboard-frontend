@@ -7,7 +7,7 @@ export function Loader({
   ...props
 }: React.ComponentProps<typeof Helix>) {
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }} className="bg-muted">
       <Helix size={size} color={color} {...props} />
     </div>
   );

@@ -33,6 +33,16 @@ const UserAPI = {
       throw error;
     }
   },
+
+  async getUserProfile(uuid: string) {
+    try {
+      const response = await axios.get("/user/profile/" + uuid);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      throw error;
+    }
+  }
 }
 
 export default UserAPI;

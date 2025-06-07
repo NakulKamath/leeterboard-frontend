@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { doSignInWithEmailAndPassword, doSignInWithGoogle } from "@/components/FirebaseAuth"
 import { useAuth } from "@/components/AuthContext";
 import { Loader } from "@/components/Loader";
+import UserAPI from "@/api/user";
+import Link from "next/link";
 
 export function LoginForm({
   className,
@@ -32,13 +34,21 @@ export function LoginForm({
     setTimeout(() => {
       setLoaderState(false);
     }, 500);
-    if (userLoggedIn && user?.displayName) {
-      toast("You are already logged in!");
-      router.push("/dashboard");
-    } else if (userLoggedIn && !user?.displayName) {
-      toast("Please link your account")
-      router.push("/link");
-    }
+
+    const checkUserStatus = async () => {
+      if (userLoggedIn && user?.uid) {
+        const linked = await UserAPI.getUserStatus(user.uid);
+        if (linked.found) {
+          toast("You are already signed up!");
+          router.push("/dashboard");
+        } else {
+          toast("You are already signed up, please link your account");
+          router.push("/link");
+        }
+      }
+    };
+
+    checkUserStatus();
   }, [user, userLoggedIn, router]);
 
   const handleSignIn = async (email: string, password: string) => {
@@ -163,9 +173,9 @@ export function LoginForm({
               </div>
               <div className="text-center text-sm">
                 Don&apos;t have an account?{" "}
-                <a href="/sign-up" className="underline underline-offset-4">
+                <Link href="/sign-up" className="underline underline-offset-4">
                   Sign up
-                </a>
+                </Link>
               </div>
             </div>
           </form>
