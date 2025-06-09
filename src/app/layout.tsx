@@ -13,6 +13,9 @@ const atkinsonHyperlegible = Atkinson_Hyperlegible({
 export const metadata: Metadata = {
   title: "leeterboard.xyz",
   description: "Leetcode Leaderboards",
+  icons: {
+    icon: "/favicon.ico",
+  }
 };
 
 export default function RootLayout({
