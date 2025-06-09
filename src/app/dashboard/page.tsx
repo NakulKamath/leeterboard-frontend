@@ -17,7 +17,6 @@ import { SettingsDrawer } from '@/components/SettingsDrawer';
 import CreateDialog from '@/components/CreateDialog';
 import DeleteDialog from '@/components/DeleteDialog';
 import { Skeleton } from '@/components/ui/skeleton';
-import Topnav from '@/components/Topnav';
 import { doSignOut } from '@/components/FirebaseAuth';
 import { Dialog,DialogClose, DialogContent, DialogDescription, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 import { Share } from 'lucide-react';
@@ -164,8 +163,7 @@ const ProfilePage = () => {
 
   if (fetching) {
   return (
-    <div className="flex flex-col min-h-svh bg-muted transition-all duration-700 opacity-100 translate-y-0">
-      <Topnav />
+    <div className="flex flex-col h-[92dvh] bg-muted transition-all duration-700 opacity-100 translate-y-0">
       <div className="flex flex-1 flex-col md:flex-row md:items-start md:justify-between p-4 md:p-10 gap-12 md:gap-64 mx-[10vw]">
         {/* Groups Section Skeleton */}
         <div className="flex-1 flex flex-col items-center md:items-start justify-center md:mt-10 w-full">
@@ -229,8 +227,7 @@ const ProfilePage = () => {
 }
 
   return (
-    <div className="flex flex-col min-h-svh bg-muted transition-all duration-700 opacity-100 translate-y-0">
-      <Topnav />
+    <div className="flex flex-col h-[92dvh] bg-muted transition-all duration-700 opacity-100 translate-y-0">
       <div className="flex flex-1 flex-col lg:flex-row lg:items-start lg:justify-between p-4 md:p-10 gap-12 md:gap-64 md:mx-[10vw]">
         <div className="flex-1 flex flex-col items-center lg:items-start justify-center lg:mt-10 w-full">
           <div className="flex w-full items-center justify-between mb-2">

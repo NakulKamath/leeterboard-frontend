@@ -5,7 +5,6 @@ import "ldrs/react/Grid.css";
 import Link from "next/link";
 import { useAuth } from "@/components/AuthContext";
 import { useState, useEffect } from "react";
-import Topnav from "@/components/Topnav";
 
 export default function Home() {
   if (typeof document !== 'undefined') {
@@ -22,10 +21,9 @@ export default function Home() {
   const { userLoggedIn } = useAuth();
 
   return (
-    <div className="bg-muted flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10 relative overflow-hidden">
-      <div className="absolute top-0 left-0"><Topnav /></div>
+    <div className="bg-muted flex flex-col items-center justify-center gap-6 p-6 md:p-10 relative overflow-hidden h-[92vh]">
       <div className="absolute inset-0 flex items-center justify-center z-0 opacity-20">
-      <div className="flex flex-row gap-8 items-center justify-center h-full">
+      <div className="flex flex-row gap-8 items-center justify-center h-full mb-20">
         <div className="hidden 2xl:block"><Grid size="100" speed={2.5} color="#ffa41d" /></div>
         <div className="hidden xl:block"><Grid size="150" speed={3} color="#ffa41d" /></div>
         <div className="hidden lg:block"><Grid size="200" speed={3.5} color="#ffa41d" /></div>
@@ -39,7 +37,7 @@ export default function Home() {
       </div>
       <div className="flex w-full max-w-sm flex-col gap-6 items-center z-10">
       <h1 className="pt-25 md:pt-0 text-5xl md:text-9xl text-center tracking-tight">leeterboard.xyz</h1>
-      <p className="text-lg md:text-2xl text-center font-light">Leetcode Leaderboards</p>
+      <p className="text-lg md:text-2xl text-center font-light mb-20">Leetcode Leaderboards</p>
       {(() => {
         return (
           <div

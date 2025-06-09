@@ -135,3 +135,35 @@
 .animate-float-in {
   animation: float-in 0.6s ease-out;
 }
+
+/* globals.css */
+
+/* Default scrollbar styles */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #000000; /* Tailwind slate-600 */
+  border-radius: 9999px;
+}
+
+/* Dark mode scrollbar styles */
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #000000; /* Tailwind gray-400 */
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: 16px;
+  scrollbar-color: #000000 transparent;
+}
+
+.dark * {
+  scrollbar-color: #000000 transparent;
+}

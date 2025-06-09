@@ -1,6 +1,5 @@
 'use client'
 
-import Topnav from '@/components/Topnav';
 import { useEffect, useState } from 'react';
 import GroupAPI from '@/api/group';
 import { toast } from 'sonner';
@@ -115,8 +114,7 @@ export default function GroupPage() {
   }
 
   return (
-    <main className='bg-muted min-h-screen flex flex-col items-center pt-0 p-4 overflow-x-hidden'>
-      <Topnav />
+    <main className='bg-muted h-[92dvh] flex flex-col items-center pt-0 p-4 overflow-x-hidden'>
       <div className={isPrompted ? 'block' : 'hidden'}>
         <JoinDialog 
           open={open} 
