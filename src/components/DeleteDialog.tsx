@@ -13,12 +13,12 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 
-interface CreateDialogProps {
+interface DeleteDialogProps {
   groupName: string;
   deleteHandler: (name: string) => void;
 }
 
-function DeleteDialog({groupName, deleteHandler}: CreateDialogProps) {
+function DeleteDialog({groupName, deleteHandler}: DeleteDialogProps) {
   const [inputValue, setInputValue] = React.useState("");
 
   return (

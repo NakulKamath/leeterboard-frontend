@@ -27,6 +27,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (user) {
         localStorage.setItem('uuid', user.uid);
       }
+      else {
+        localStorage.removeItem('uuid');
+      }
     });
     return unsubscribe;
   }, []);

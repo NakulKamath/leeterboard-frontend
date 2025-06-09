@@ -18,6 +18,9 @@ import CreateDialog from '@/components/CreateDialog';
 import DeleteDialog from '@/components/DeleteDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import Topnav from '@/components/Topnav';
+import { doSignOut } from '@/components/FirebaseAuth';
+import { Dialog,DialogClose, DialogContent, DialogDescription, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
+import { Share } from 'lucide-react';
 
 interface UserProfile {
   username: string;
@@ -42,6 +45,10 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [fetching, setFetching] = useState(true);
+
+  if (typeof document !== 'undefined') {
+    document.title = "Dashboard";
+  }
 
   const createHandler = async () => {
     setIsLoading(true);
@@ -97,6 +104,11 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+      if (!localStorage.getItem("uuid")) {
+        toast.error("You are not logged in!");
+        router.push("/sign-in");
+        return;
+      }
       if (userLoggedIn && user?.uid) {
         try {
           const linked = await UserAPI.getUserStatus(user.uid);
@@ -123,10 +135,8 @@ const ProfilePage = () => {
     }, 500);
   }, [userLoggedIn, user, router]);
 
-  console.log("User Profile:", userProfile);
 
   const handlePrivacyToggle = async (groupName: string, privacy: boolean) => {
-    console.log("Changing privacy for group:", groupName, "to", privacy);
     setIsPrivacyLoading(true);
     try {
       const response = await GroupAPI.changeGroupPrivacy(groupName, privacy);
@@ -221,8 +231,8 @@ const ProfilePage = () => {
   return (
     <div className="flex flex-col min-h-svh bg-muted transition-all duration-700 opacity-100 translate-y-0">
       <Topnav />
-      <div className="flex flex-1 flex-col md:flex-row md:items-start md:justify-between p-4 md:p-10 gap-12 md:gap-64 md:mx-[10vw]">
-        <div className="flex-1 flex flex-col items-center md:items-start justify-center md:mt-10 w-full">
+      <div className="flex flex-1 flex-col lg:flex-row lg:items-start lg:justify-between p-4 md:p-10 gap-12 md:gap-64 md:mx-[10vw]">
+        <div className="flex-1 flex flex-col items-center lg:items-start justify-center lg:mt-10 w-full">
           <div className="flex w-full items-center justify-between mb-2">
             <h1 className="text-3xl md:text-4xl font-bold text-center md:text-left transition-all">
               Groups
@@ -272,6 +282,12 @@ const ProfilePage = () => {
                     groupName={group}
                     deleteHandler={deleteHandler}
                   />
+                  <Button onClick={() => {
+                    navigator.clipboard.writeText(`${window.location.origin}/${group}?code=${groupInfo.secret}`);
+                    toast.success('Group link copied to clipboard!');
+                  }}>
+                    <Share />
+                  </Button>
                 </div>
                 </Card>
               );
@@ -283,7 +299,7 @@ const ProfilePage = () => {
             </Card>
           )}
         </div>
-        <div className="w-full md:max-w-sm md:sticky md:top-24 md:self-start md:my-10">
+        <div className="w-full lg:max-w-sm md:sticky md:top-24 md:self-start md:my-10">
           <Card className='w-full shadow-xl/30'>
             <CardHeader className="text-center">
               <div className="flex flex-col items-center gap-2">
@@ -352,6 +368,38 @@ const ProfilePage = () => {
               </Button>
             </CardFooter>
           </Card>
+          <div className="flex justify-center m-8">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="w-full bg-red-500 hover:bg-red-600 text-white font-bold">
+                  Sign Out
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogTitle className="text-lg font-semibold mb-2 text-center">
+                  Sign Out
+                </DialogTitle>
+                <DialogDescription className="text-center mb-4">
+                  Are you sure you want to sign out?
+                </DialogDescription>
+                <div className="flex justify-center gap-4">
+                  <Button
+                    variant="destructive"
+                    onClick={() => {
+                      doSignOut();
+                      toast.success("Signed out successfully!");
+                      router.push("/");
+                    }}
+                  >
+                    Sign Out
+                  </Button>
+                  <DialogClose asChild>
+                    <Button variant="secondary">Cancel</Button>
+                  </DialogClose>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
       </div>
     </div>

@@ -42,6 +42,32 @@ const UserAPI = {
       console.error("Error fetching user profile:", error);
       throw error;
     }
+  },
+  async addUserToGroup(groupName: string, secret: string) {
+    try {
+      const response = await axios.post("/user/add", {
+        uuid: localStorage.getItem("uuid") || "none",
+        groupName: groupName,
+        secret: secret
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error adding user to group:", error);
+      throw error;
+    }
+  },
+  async addAnonUserToGroup(groupName: string, secret: string) {
+    try {
+      const response = await axios.post("/user/add-anon", {
+        username: localStorage.getItem("anon-username") || "none",
+        groupName: groupName,
+        secret: secret
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error adding anonymous user to group:", error);
+      throw error;
+    }
   }
 }
 

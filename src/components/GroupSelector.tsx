@@ -94,7 +94,7 @@ export function GroupSelector() {
           {triggerLabel}
         </Button>
       </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="h-[40vh]">
         <DialogTitle className="mt-4 mx-auto text-lg font-semibold">
           Select Group
         </DialogTitle>

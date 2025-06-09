@@ -8,6 +8,9 @@ import { useState, useEffect } from "react";
 import Topnav from "@/components/Topnav";
 
 export default function Home() {
+  if (typeof document !== 'undefined') {
+    document.title = "leeterboard.xyz";
+  }
   const [showButtons, setShowButtons] = useState(false);
 
   useEffect(() => {
@@ -23,15 +26,15 @@ export default function Home() {
       <div className="absolute top-0 left-0"><Topnav /></div>
       <div className="absolute inset-0 flex items-center justify-center z-0 opacity-20">
       <div className="flex flex-row gap-8 items-center justify-center h-full">
-        <Grid size="100" speed={2.5} color="#ffa41d" />
-        <Grid size="150" speed={3} color="#ffa41d" />
-        <Grid size="200" speed={3.5} color="#ffa41d" />
-        <Grid size="250" speed={4} color="#ffa41d" />
+        <div className="hidden 2xl:block"><Grid size="100" speed={2.5} color="#ffa41d" /></div>
+        <div className="hidden xl:block"><Grid size="150" speed={3} color="#ffa41d" /></div>
+        <div className="hidden lg:block"><Grid size="200" speed={3.5} color="#ffa41d" /></div>
+        <div className="hidden sm:block"><Grid size="250" speed={4} color="#ffa41d" /></div>
         <Grid size="300" speed={5} color="#ffa41d" />
-        <div style={{ transform: "scaleX(-1)" }}><Grid size="250" speed={4} color="#ffa41d" /></div>
-        <div style={{ transform: "scaleX(-1)" }}><Grid size="200" speed={3.5} color="#ffa41d" /></div>
-        <div style={{ transform: "scaleX(-1)" }}><Grid size="150" speed={3} color="#ffa41d" /></div>
-        <div style={{ transform: "scaleX(-1)" }}><Grid size="100" speed={2.5} color="#ffa41d" /></div>
+        <div style={{ transform: "scaleX(-1)" }} className="hidden sm:block"><Grid size="250" speed={4} color="#ffa41d" /></div>
+        <div style={{ transform: "scaleX(-1)" }} className="hidden lg:block"><Grid size="200" speed={3.5} color="#ffa41d" /></div>
+        <div style={{ transform: "scaleX(-1)" }} className="hidden xl:block"><Grid size="150" speed={3} color="#ffa41d" /></div>
+        <div style={{ transform: "scaleX(-1)" }} className="hidden 2xl:block"><Grid size="100" speed={2.5} color="#ffa41d" /></div>
       </div>
       </div>
       <div className="flex w-full max-w-sm flex-col gap-6 items-center z-10">

@@ -106,7 +106,7 @@ export function LinkerForm({
               {user?.uid ? ` ${user.uid} ` : ""}
             </span><br/>to your Summary section<br />
             3) Enter your LeetCode ID below
-            3) Click the button link your account
+            4) Click the button link your account
           </CardDescription>
         </CardHeader>
         <CardContent>
