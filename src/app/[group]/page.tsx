@@ -52,9 +52,9 @@ export default function GroupPage() {
         const groupSlug = window.location.pathname.split('/')[1];
         const groupData = await GroupAPI.getGroup(groupSlug || '', searchParams.get('code'));
         if (!groupData.success) {
-          toast.error(groupData.error || 'Failed to fetch group data');
+          toast.error(groupData.message || 'Failed to fetch group data');
           setNotFound(true);
-          setError(groupData.error);
+          setError(groupData.message || 'Group not found');
           return;
         }
         console.log('Fetched group data:', groupData);
@@ -86,7 +86,7 @@ export default function GroupPage() {
         localStorage.setItem('anon-username', "anon-" + inputValue.trim());
         const response = await UserAPI.addAnonUserToGroup(params.group as string, searchParams.get('code') || '');
         if (!response.success) {
-          toast.error(response.error || 'Failed to join the group');
+          toast.error(response.message || 'Failed to join the group');
           localStorage.removeItem('anon-username');
           return;
         }
@@ -94,7 +94,7 @@ export default function GroupPage() {
       } else {
         const response = await UserAPI.addUserToGroup(params.group as string, searchParams.get('code') || '');
         if (!response.success) {
-          toast.error(response.error || 'Failed to join the group');
+          toast.error(response.message || 'Failed to join the group');
           return;
         }
         toast.success('You have joined the group successfully!');

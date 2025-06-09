@@ -35,8 +35,11 @@ export function LinkerForm({
       if (userLoggedIn && user?.uid) {
         const linked = await UserAPI.getUserStatus(user.uid);
         if (linked.found) {
-          toast("You account is already linked!");
+          toast("You are already signed up!");
           router.push("/dashboard");
+        } else {
+          toast("You are already signed up, please link your account");
+          router.push("/link");
         }
       }
     };
@@ -56,7 +59,11 @@ export function LinkerForm({
         toast.error("Please enter your LeetCode ID");
         return;
       }
-      await UserAPI.registerUser(user.uid, username);
+      const response = await UserAPI.registerUser(user.uid, username);
+      if (!response.success) {
+        toast.error(response.message || "Failed to link account.");
+        return;
+      }
       toast.success("Account linked successfully!");
     } catch (error: unknown) {
       if (error instanceof Error) {

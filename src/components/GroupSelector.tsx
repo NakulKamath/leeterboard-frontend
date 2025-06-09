@@ -42,16 +42,16 @@ export function GroupSelector() {
     const fetchUserProfile = async () => {
       if (userLoggedIn && user?.uid) {
         try {
-          const profile = await UserAPI.getUserProfile(user.uid);
-          if (profile) {
-            const owned = profile.owned.map((item: [string, string[]]) => item[0])
-            const groups = profile.groups.filter((g: string[]) => !owned.includes(g))
-            setOwnedGroups(owned)
-            setOtherGroups(groups)
-            setLoading(false)
-          } else {
-            toast.error("Failed to fetch user profile.");
+          const response = await UserAPI.getUserProfile(user.uid);
+          if (!response.success) {
+            toast.error(response.message || "Failed to fetch user profile.");
+            return;
           }
+          const owned = response.owned.map((item: [string, string[]]) => item[0])
+          const groups = response.groups.filter((g: string[]) => !owned.includes(g))
+          setOwnedGroups(owned)
+          setOtherGroups(groups)
+          setLoading(false)
         } catch (error) {
           console.error("Error fetching user profile:", error);
           toast.error("An error occurred while fetching your profile.");

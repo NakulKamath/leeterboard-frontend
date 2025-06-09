@@ -4,7 +4,7 @@ const GroupAPI = {
   async getGroup(groupName: string, code: string | null = null) {
     try {
       console.log('Fetching group:', groupName, 'for user:', localStorage.getItem('uuid'), 'with code:', code, 'on page:');
-      const response = await axios.get('/group/fetch/' + groupName + '/' + (localStorage.getItem('uuid') || localStorage.getItem('anon-username')) + '/' + (code || 'none'));
+      const response = await axios.get('/group/fetch/' + groupName + '/' + (localStorage.getItem('uuid') || localStorage.getItem('anon-username') || 'none') + '/' + (code || 'none'));
       if (response.status !== 200) {
         throw new Error(`Error fetching group data: ${response.statusText}`);
       }

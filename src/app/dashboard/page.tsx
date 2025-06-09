@@ -148,7 +148,7 @@ const ProfilePage = () => {
           }
         });
       } else {
-        toast.error("Failed to update group privacy.");
+        toast.error(response.message || "Failed to update group privacy.");
       }
     } catch (error) {
       console.error("Error changing group privacy:", error);
