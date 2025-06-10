@@ -40,6 +40,7 @@ export function LoginForm({
         const linked = await UserAPI.getUserStatus(user.uid);
         if (linked.found) {
           toast("You are already signed up!");
+          console.log('login')
           router.push("/dashboard");
         } else {
           toast("You are already signed up, please link your account");

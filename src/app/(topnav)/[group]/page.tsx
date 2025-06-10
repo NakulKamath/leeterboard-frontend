@@ -99,7 +99,10 @@ export default function GroupPage() {
         }
         toast.success('You have joined the group successfully!');
       }
-      window.location.reload();
+      setLoaderState(true);
+      setTimeout(() => {
+        window.location.href = `${window.location.origin}/${params.group}`;
+      }, 1000);
     } catch (error) {
       console.error('Error joining group:', error);
       toast.error('An error occurred while joining the group');

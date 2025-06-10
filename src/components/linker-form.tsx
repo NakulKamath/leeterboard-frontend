@@ -37,9 +37,6 @@ export function LinkerForm({
         if (linked.found) {
           toast("You are already signed up!");
           router.push("/dashboard");
-        } else {
-          toast("You are already signed up, please link your account");
-          router.push("/link");
         }
       }
     };
@@ -65,6 +62,7 @@ export function LinkerForm({
         return;
       }
       toast.success("Account linked successfully!");
+      router.push("/dashboard");
     } catch (error: unknown) {
       if (error instanceof Error) {
         if (error.message.includes("403")) {

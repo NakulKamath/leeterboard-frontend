@@ -21,7 +21,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { toast } from "sonner"
-import { useAuth } from "./AuthContext"
 import UserAPI from "@/api/user"
 import { useRouter } from "next/navigation"
 import { DialogTitle } from "@radix-ui/react-dialog"
@@ -35,14 +34,14 @@ export function GroupSelector() {
   const [otherGroups, setOtherGroups] = useState<Group[]>([])
   const [loading, setLoading] = useState(true)
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  const { user, userLoggedIn } = useAuth()
 
   useEffect(() => {
     setLoading(true)
     const fetchUserProfile = async () => {
-      if (userLoggedIn && user?.uid) {
+      if (localStorage.getItem('uuid')) {
         try {
-          const response = await UserAPI.getUserProfile(user.uid);
+          const response = await UserAPI.getUserProfile(localStorage.getItem('uuid') || "");
+          console.log("group selector")
           if (!response.success) {
             toast.error(response.message || "Failed to fetch user profile.");
             return;
@@ -59,7 +58,7 @@ export function GroupSelector() {
       }
     };
     fetchUserProfile();
-  }, [user, userLoggedIn])
+  }, [])
 
     const triggerLabel = isDesktop
       ? selectedGroup || "+ Select group"

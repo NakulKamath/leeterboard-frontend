@@ -3,7 +3,6 @@ import { Atkinson_Hyperlegible } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthContext";
 import { Toaster } from "sonner";
-import Topnav from "@/components/Topnav";
 
 const atkinsonHyperlegible = Atkinson_Hyperlegible({
   variable: "--font-atkinson-hyperlegible",
@@ -30,7 +29,6 @@ export default function RootLayout({
         className={`${atkinsonHyperlegible.variable} antialiased`}
       >
         <AuthProvider>
-          <Topnav />
           <Toaster className="select-none" position="top-center"/>
           {children}
         </AuthProvider>

@@ -34,7 +34,7 @@ interface UserProfile {
 
 const ProfilePage = () => {
   const router = useRouter();
-  const { user, userLoggedIn } = useAuth();
+  const { user } = useAuth();
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [loaderState, setLoaderState] = useState<boolean>(true);
   const [isPrivacyLoading, setIsPrivacyLoading] = useState<boolean>(false);
@@ -67,6 +67,10 @@ const ProfilePage = () => {
         setIsPrivate(false);
         setOpen(false);
         userProfile?.owned?.push([groupName, { members: [response.username], secret: groupSecret, privacy: isPrivate }]);
+        setLoaderState(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       }
     }
     catch (error) {
@@ -94,6 +98,10 @@ const ProfilePage = () => {
             owned: prevProfile.owned.filter((group) => Array.isArray(group) && group[0] !== groupName),
           };
         });
+        setLoaderState(true);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       }
     } catch (error) {
       console.error("Unexpected error:", error);
@@ -108,10 +116,11 @@ const ProfilePage = () => {
         router.push("/sign-in");
         return;
       }
-      if (userLoggedIn && user?.uid) {
+      if (localStorage.getItem('uuid')) {
         try {
-          const linked = await UserAPI.getUserStatus(user.uid);
-          const profile = await UserAPI.getUserProfile(user.uid);
+          const linked = await UserAPI.getUserStatus(localStorage.getItem('uuid') || "");
+          console.log("dashboard")
+          const profile = await UserAPI.getUserProfile(localStorage.getItem('uuid') || "");
           if (!linked.found) {
             toast("You account is not linked yet!");
             router.push("/link");
@@ -132,7 +141,7 @@ const ProfilePage = () => {
     setTimeout(() => {
       setLoaderState(false);
     }, 500);
-  }, [userLoggedIn, user, router]);
+  }, [router]);
 
 
   const handlePrivacyToggle = async (groupName: string, privacy: boolean) => {
