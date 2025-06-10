@@ -57,7 +57,24 @@ const ProfilePage = () => {
       return;
     }
     try {
-      const response = await GroupAPI.createGroup(groupName, groupSecret, isPrivate, user?.uid || "");
+      const trimmedGroupName = groupName.trim();
+      const trimmedGroupSecret = groupSecret.trim();
+      
+      setGroupName(trimmedGroupName);
+      setGroupSecret(trimmedGroupSecret);
+      
+      if (/[^a-zA-Z0-9_-]/.test(trimmedGroupName)) {
+        toast.error("Group name can only contain letters, numbers, underscores, and hyphens.");
+        setIsLoading(false);
+        return;
+      }
+      if (/[^a-zA-Z0-9_-]/.test(trimmedGroupSecret)) {
+        toast.error("Group secret can only contain letters, numbers, underscores, and hyphens.");
+        setIsLoading(false);
+        return;
+      }
+
+      const response = await GroupAPI.createGroup(trimmedGroupName, trimmedGroupSecret, isPrivate, user?.uid || "");
       if (!response.success) {
         toast.error("Failed to create group: " + response.message);
       } else {
