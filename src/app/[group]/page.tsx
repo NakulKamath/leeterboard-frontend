@@ -12,6 +12,7 @@ import { useSearchParams, useParams } from 'next/navigation';
 import JoinDialog from '@/components/JoinDialog';
 import UserAPI from '@/api/user';
 import { Share } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function GroupPage() {
   const [members, setMembers] = useState<UserType[]>([]);
@@ -185,18 +186,18 @@ export default function GroupPage() {
         )}
         {groupSecret !== '' && (
           
-        <button
+        <Button
           onClick={() => {
             const url = `${window.location.origin}${window.location.pathname}?code=${groupSecret}`;
             navigator.clipboard.writeText(url);
             toast.success('Group link copied to clipboard!');
           }}
-          className="fixed bottom-6 right-6 z-50 bg-black text-white rounded-full shadow-lg p-4 hover:bg-primary/90 transition-colors flex items-center gap-2"
+          className="fixed bottom-6 right-6 z-50 bg-black text-white rounded-full shadow-lg p-4 hover:bg-primary/20 transition-colors flex items-center gap-2"
           aria-label="Share group link"
         >
           <Share className="w-5 h-5" />
           <span className="hidden sm:inline">Invite to group</span>
-        </button>)}
+        </Button>)}
       </div>
     </main>
   );

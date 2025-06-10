@@ -29,7 +29,7 @@ const Topnav: React.FC = () => {
 
 
   return (
-    <div className="h-[8vh] bg-muted w-[100vw] py-4 px-6 flex items-center overflow-hidden relative z-10">
+    <div className="h-[8dvh] bg-muted w-[100vw] py-4 px-6 flex items-center overflow-hidden relative z-10">
       <div className="flex items-center flex-1">
       <Link
         href="/"

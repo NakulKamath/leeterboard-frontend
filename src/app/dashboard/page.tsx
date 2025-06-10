@@ -19,7 +19,7 @@ import DeleteDialog from '@/components/DeleteDialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { doSignOut } from '@/components/FirebaseAuth';
 import { Dialog,DialogClose, DialogContent, DialogDescription, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
-import { Share } from 'lucide-react';
+import { LogOut, Share } from 'lucide-react';
 
 interface UserProfile {
   username: string;
@@ -227,7 +227,7 @@ const ProfilePage = () => {
 }
 
   return (
-    <div className="flex flex-col h-[92dvh] bg-muted transition-all duration-700 opacity-100 translate-y-0">
+    <div className="flex flex-col h-[92dvh] bg-muted transition-all duration-700 opacity-100 translate-y-0 overflow-hidden">
       <div className="flex flex-1 flex-col lg:flex-row lg:items-start lg:justify-between p-4 md:p-10 gap-12 md:gap-64 md:mx-[10vw]">
         <div className="flex-1 flex flex-col items-center lg:items-start justify-center lg:mt-10 w-full">
           <div className="flex w-full items-center justify-between mb-2">
@@ -368,8 +368,9 @@ const ProfilePage = () => {
           <div className="flex justify-center m-8">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" className="w-full bg-red-500 hover:bg-red-600 text-white font-bold">
-                  Sign Out
+                <Button variant="destructive" className="fixed bottom-6 right-6 z-50 text-white rounded-full shadow-lg p-4 hover:bg-destructive/50 transition-colors flex items-center gap-2">
+                  <LogOut className="w-5 h-5" />
+                  <span className="hidden sm:inline">Sign Out</span>
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-md">
