@@ -70,7 +70,7 @@ export function SignupForm({
           toast.error("Email already exists. Please try signing in instead.");
           return;
         }
-        toast.error("Failed to sign up. Please try again.");
+        toast.error(error.message.slice(9));
       } else {
         toast.error("An unexpected error occurred. Please try again.");
       }

@@ -11,7 +11,7 @@ import { Loader } from '@/components/Loader';
 import { useSearchParams, useParams } from 'next/navigation';
 import JoinDialog from '@/components/JoinDialog';
 import UserAPI from '@/api/user';
-import { Share } from 'lucide-react';
+import { LogOut, Share } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function GroupPage() {
@@ -188,7 +188,7 @@ export default function GroupPage() {
           </div>
         )}
         {groupSecret !== '' && (
-          
+        <>
         <Button
           onClick={() => {
             const url = `${window.location.origin}${window.location.pathname}?code=${groupSecret}`;
@@ -200,7 +200,19 @@ export default function GroupPage() {
         >
           <Share className="w-5 h-5" />
           <span className="hidden sm:inline">Invite to group</span>
-        </Button>)}
+        </Button>
+        <Button
+          onClick={() => {
+            toast('Coming soon: Exit group feature');
+          }}
+          className="fixed bottom-6 left-6 z-50 text-white rounded-full shadow-lg p-4 hover:bg-destructive/50 transition-colors flex items-center gap-2"
+          aria-label="Share group link"
+          variant={'destructive'}
+        >
+          <span className="hidden sm:inline">Leave group</span>
+          <LogOut className="w-5 h-5" />
+        </Button>
+        </>)}
       </div>
     </main>
   );

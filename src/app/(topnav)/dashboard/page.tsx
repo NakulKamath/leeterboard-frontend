@@ -253,8 +253,42 @@ const ProfilePage = () => {
 }
 
   return (
-    <div className="flex flex-col h-[92dvh] bg-muted transition-all duration-700 opacity-100 translate-y-0 overflow-hidden">
-      <div className="flex flex-1 flex-col lg:flex-row lg:items-start lg:justify-between p-4 md:p-10 gap-12 md:gap-64 md:mx-[10vw]">
+    <>
+    <div className='w-[100dvh] overflow-hidden'>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="destructive" className="fixed bottom-6 right-6 z-50 text-white rounded-full shadow-lg p-4 hover:bg-destructive/50 transition-colors flex items-center gap-2">
+            <LogOut className="w-5 h-5" />
+            <span className="hidden sm:inline">Sign Out</span>
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="max-w-md">
+          <DialogTitle className="text-lg font-semibold mb-2 text-center">
+            Sign Out
+          </DialogTitle>
+          <DialogDescription className="text-center mb-4">
+            Are you sure you want to sign out?
+          </DialogDescription>
+          <div className="flex justify-center gap-4">
+            <Button
+              variant="destructive"
+              onClick={() => {
+                doSignOut();
+                toast.success("Signed out successfully!");
+                router.push("/");
+              }}
+            >
+              Sign Out
+            </Button>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
+          </div>
+        </DialogContent>
+      </Dialog>
+      </div>
+    <div className="flex flex-col h-[92dvh] bg-muted transition-all duration-700 opacity-100 translate-y-0 overflow-x-hidden">
+      <div className="flex flex-1 flex-col lg:flex-row lg:items-start lg:justify-between p-4 md:p-10 md:pb-0 gap-12 md:gap-64 md:mx-[10vw]">
         <div className="flex-1 flex flex-col items-center lg:items-start justify-center lg:mt-10 w-full">
           <div className="flex w-full items-center justify-between mb-2">
             <h1 className="text-3xl md:text-4xl font-bold text-center md:text-left transition-all">
@@ -283,7 +317,7 @@ const ProfilePage = () => {
               // groupInfo: { members: string[], secret: string, privacy: boolean }
               const [group, groupInfo] = Array.isArray(ownedGroup) ? ownedGroup : [ownedGroup, { members: [], secret: '', privacy: true }];
               return (
-                <Card key={group} className="w-full flex flex-row items-center justify-between px-6 py-6 shadow-xl/15">
+                <Card key={group} className="w-full flex flex-col md:flex-row items-center justify-between px-6 py-6 shadow-xl/15">
                 <div>
                   <CardTitle className="text-xl"><Link href={'/' + group} className='hover:underline'>{group}</Link></CardTitle>
                 </div>
@@ -322,7 +356,7 @@ const ProfilePage = () => {
             </Card>
           )}
         </div>
-        <div className="w-full lg:max-w-sm md:sticky md:top-24 md:self-start md:my-10">
+        <div className="w-full lg:max-w-sm md:mt-10">
           <Card className='w-full shadow-xl/30'>
             <CardHeader className="text-center">
               <div className="flex flex-col items-center gap-2">
@@ -392,41 +426,11 @@ const ProfilePage = () => {
             </CardFooter>
           </Card>
           <div className="flex justify-center m-8">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="destructive" className="fixed bottom-6 right-6 z-50 text-white rounded-full shadow-lg p-4 hover:bg-destructive/50 transition-colors flex items-center gap-2">
-                  <LogOut className="w-5 h-5" />
-                  <span className="hidden sm:inline">Sign Out</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="max-w-md">
-                <DialogTitle className="text-lg font-semibold mb-2 text-center">
-                  Sign Out
-                </DialogTitle>
-                <DialogDescription className="text-center mb-4">
-                  Are you sure you want to sign out?
-                </DialogDescription>
-                <div className="flex justify-center gap-4">
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      doSignOut();
-                      toast.success("Signed out successfully!");
-                      router.push("/");
-                    }}
-                  >
-                    Sign Out
-                  </Button>
-                  <DialogClose asChild>
-                    <Button variant="secondary">Cancel</Button>
-                  </DialogClose>
-                </div>
-              </DialogContent>
-            </Dialog>
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 }
 export default ProfilePage;

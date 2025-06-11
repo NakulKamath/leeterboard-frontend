@@ -64,9 +64,9 @@ export function LoginForm({
       toast.success("Successfully signed in!");
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error("Error!", {description : error.message || "Failed to sign in. Please try again."});
+        toast.error(error.message.slice(9));
       } else {
-        toast.error("Error!", {description : "An unexpected error occurred. Please try again."});
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
@@ -80,9 +80,9 @@ export function LoginForm({
       toast.success("Successfully signed in with Google!");
     } catch (error: unknown) {
       if (error instanceof Error) {
-        toast.error("Error!", {description : error.message || "Failed to sign in. Please try again."});
+        toast.error(error.message.slice(9));
       } else {
-        toast.error("Error!", {description : "An unexpected error occurred. Please try again."});
+        toast.error("An unexpected error occurred. Please try again.");
       }
     } finally {
       setIsLoading(false);
