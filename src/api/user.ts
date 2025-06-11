@@ -68,6 +68,31 @@ const UserAPI = {
       console.error("Error adding anonymous user to group:", error);
       throw error;
     }
+  },
+  async removeUserFromGroup(groupName: string, username: string) {
+    try {
+      const response = await axios.post("/user/remove", {
+        groupName: groupName,
+        username: username
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error removing user from group:", error);
+      throw error;
+    }
+  },
+  async removeSelfFromGroup(groupName: string) {
+    try {
+      const response = await axios.post("/user/remove", {
+        groupName: groupName,
+        uuid: localStorage.getItem("uuid"),
+        username: localStorage.getItem("anon-username")
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error removing self from group:", error);
+      throw error;
+    }
   }
 }
 

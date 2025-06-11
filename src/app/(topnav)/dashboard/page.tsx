@@ -332,8 +332,8 @@ const ProfilePage = () => {
                   />
                   <SettingsDrawer
                     groupName={group}
-                    members={groupInfo.members}
-                    secret={groupInfo.secret}
+                    groupMembers={groupInfo.members}
+                    groupSecret={groupInfo.secret}
                   />
                   <DeleteDialog
                     groupName={group}

@@ -13,6 +13,7 @@ import JoinDialog from '@/components/JoinDialog';
 import UserAPI from '@/api/user';
 import { LogOut, Share } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogTrigger, DialogTitle } from '@/components/ui/dialog';
 
 export default function GroupPage() {
   const [members, setMembers] = useState<UserType[]>([]);
@@ -23,6 +24,7 @@ export default function GroupPage() {
   const [open, setOpen] = useState<boolean>(false);
   const [inputValue, setInputValue] = useState<string>('');
   const [isJoining, setIsJoining] = useState<boolean>(false);
+  const [isLeaving, setIsLeaving] = useState<boolean>(false);
   const [groupSecret, setGroupSecret] = useState<string>('');
   const [isPrompted, setIsPrompted] = useState<boolean>(false);
 
@@ -110,6 +112,32 @@ export default function GroupPage() {
       setIsJoining(false);
       setInputValue('');
       setOpen(false);
+    }
+  }
+
+  const leaveHandler = async () => {
+    setIsLeaving(true);
+    try {
+      if (localStorage.getItem('uuid') === null) {
+        toast.error('You are not a member of this group');
+        return;
+      }
+      const response = await UserAPI.removeSelfFromGroup(params.group as string);
+      if (!response.success) {
+        toast.error(response.message || 'Failed to leave the group');
+        return;
+      }
+      setLoaderState(true);
+      setTimeout(() => {
+        window.location.href = `${window.location.origin}`;
+      }, 1000);
+      toast.success('You have left the group successfully!');
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message || 'An error occurred while leaving the group');
+      }
+    } finally {
+      setIsLeaving(false);
     }
   }
 
@@ -201,17 +229,38 @@ export default function GroupPage() {
           <Share className="w-5 h-5" />
           <span className="hidden sm:inline">Invite to group</span>
         </Button>
-        <Button
-          onClick={() => {
-            toast('Coming soon: Exit group feature');
-          }}
-          className="fixed bottom-6 left-6 z-50 text-white rounded-full shadow-lg p-4 hover:bg-destructive/50 transition-colors flex items-center gap-2"
-          aria-label="Share group link"
-          variant={'destructive'}
-        >
-          <span className="hidden sm:inline">Leave group</span>
-          <LogOut className="w-5 h-5" />
-        </Button>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              className="fixed bottom-6 left-6 z-50 text-white rounded-full shadow-lg p-4 hover:bg-destructive/50 transition-colors flex items-center gap-2"
+              aria-label="Leave group"
+              variant={'destructive'}
+            >
+              <span className="hidden sm:inline">Leave group</span>
+              <LogOut className="w-5 h-5" />
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogTitle>Leave Group</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to leave this group? This action cannot be undone.
+            </DialogDescription>
+            <div className="flex justify-end gap-2 mt-4">
+              <DialogTrigger asChild>
+          <Button variant="outline">Cancel</Button>
+              </DialogTrigger>
+              <Button 
+                variant="destructive"
+                onClick={() => {
+                  leaveHandler();
+                }}
+                disabled={isLeaving}
+              >
+                Leave Group
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
         </>)}
       </div>
     </main>

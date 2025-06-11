@@ -1,29 +1,72 @@
 import * as React from "react";
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
-import { Settings } from "lucide-react";
+import { CircleX, Settings } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import UserAPI from "@/api/user";
+import GroupAPI from "@/api/group";
+import { Dialog, DialogClose, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 interface SettingsDrawerProps {
   groupName: string;
-  members: string[];
-  secret: string;
+  groupMembers: string[];
+  groupSecret: string;
 }
 
-export function SettingsDrawer({ groupName, members, secret }: SettingsDrawerProps) {
+export function SettingsDrawer({ groupName, groupMembers, groupSecret }: SettingsDrawerProps) {
   const [open, setOpen] = useState(false);
   const [allowChange, setAllowChange] = useState(false);
-  const [secretInput, setSecretInput] = useState(secret);
+  const [secretInput, setSecretInput] = useState(groupSecret);
+  const [isLoading, setIsLoading] = useState(false);
+  const [secret, setSecret] = useState(groupSecret);
+  const [members, setMembers] = useState<string[]>(groupMembers);
 
-  const deleteHandler = (member: string) => {
-    toast('Coming soon: Delete member functionality');
-    console.log(`Delete member: ${member}`);
+  const deleteHandler = async (username: string) => {
+    try {
+      const response = await UserAPI.removeUserFromGroup(groupName, username);
+      if (response.success) {
+        toast.success(`${username} has been removed from the group.`);
+        const newMembers = members.filter(member => member !== username);
+        setMembers(newMembers);
+        return;
+      }
+      toast.error(response.message || `Failed to remove ${username} from the group.`);
+    } catch (error) {
+      console.error("Error removing user from group:", error);
+      toast.error(`Failed to remove ${username} from the group.`);
+    }
   }
 
-  const changeHandler = (secretInput: string) => {
-    toast('Coming soon: Change secret functionality');
-    console.log(`Change secret to: ${secretInput}`);
+  const changeHandler = async () => {
+    setIsLoading(true);
+    if (!secretInput) {
+      toast.error("Secret cannot be empty.");
+      return;
+    } try {
+      const trimmedGroupSecret = secretInput.trim();
+      if (/[^a-zA-Z0-9_-]/.test(trimmedGroupSecret)) {
+        toast.error("Group secret can only contain letters, numbers, underscores, and hyphens.");
+        setIsLoading(false);
+        return;
+      }
+      const response = await GroupAPI.changeGroupSecret(groupName, trimmedGroupSecret);
+      if (response.success) {
+        toast.success("Group secret changed successfully.");
+        setSecretInput(trimmedGroupSecret);
+        setSecret(trimmedGroupSecret);
+      }
+      else {
+        toast.error(response.message || "Failed to change group secret.");
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message || "An error occurred while changing the group secret.");
+      }
+      return;
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -46,33 +89,38 @@ export function SettingsDrawer({ groupName, members, secret }: SettingsDrawerPro
             </DrawerTitle>
             <div className="flex flex-col items-center">
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 w-full">
-          {members.slice(0, 10).map((member) => (
+          {members.map((member) => (
             <div
               key={member}
               className="flex items-center justify-between bg-muted rounded px-3 py-2"
             >
               <span className="truncate">{member}</span>
-              <button
-                className="ml-2 text-destructive hover:bg-destructive/10 rounded p-1"
-                onClick={() => deleteHandler(member)}
-                aria-label={`Remove ${member}`}
-                type="button"
-              >
-                <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-x"
-                >
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </button>
+                <Dialog>
+                <DialogTrigger asChild>
+                  <Button
+                  className="text-destructive hover:bg-destructive/10 rounded"
+                  aria-label={`Remove ${member}`}
+                  variant={'destructive'}
+                  >
+                  <CircleX className="h-4 w-4 text-white" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogTitle>Remove Member</DialogTitle>
+                  <p>Are you sure you want to remove {member} from the group?</p>
+                  <div className="flex justify-end gap-2 mt-4">
+                  <DialogClose asChild>
+                    <Button variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button
+                  variant="destructive"
+                  onClick={() => deleteHandler(member)}
+                  >
+                  Remove
+                  </Button>
+                  </div>
+                </DialogContent>
+                </Dialog>
             </div>
           ))}
               </div>
@@ -102,7 +150,7 @@ export function SettingsDrawer({ groupName, members, secret }: SettingsDrawerPro
                     variant="default"
                     size="sm"
                     onClick={() => {
-                    changeHandler(secretInput);
+                    changeHandler();
                     setAllowChange(false);
                     }}
                   >
@@ -129,6 +177,7 @@ export function SettingsDrawer({ groupName, members, secret }: SettingsDrawerPro
                   variant="outline"
                   size="sm"
                   onClick={() => setAllowChange(!allowChange)}
+                  disabled={isLoading}
                 >
                   {allowChange ? "Lock Secret" : "Change Secret"}
                 </Button>
@@ -137,9 +186,10 @@ export function SettingsDrawer({ groupName, members, secret }: SettingsDrawerPro
                     variant="default"
                     size="sm"
                     onClick={() => {
-                    changeHandler(secretInput);
+                    changeHandler();
                     setAllowChange(false);
                     }}
+                    disabled={isLoading}
                   >
                     Save
                   </Button>
