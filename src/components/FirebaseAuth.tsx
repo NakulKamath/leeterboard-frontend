@@ -23,6 +23,6 @@ export const doSignOut = async () => {
 
 export const doSendEmailVerification = () => {
   return sendEmailVerification(auth.currentUser!, {
-    url: `${window.location.origin}/profile`
+    url: `${window.location.origin}/link`
   });
 }
