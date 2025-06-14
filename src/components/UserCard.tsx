@@ -14,8 +14,31 @@ export default function UserCard(user: UserType) {
         </Avatar>
       </CardHeader>
       <CardContent className="flex-1 w-full">
-        <CardTitle className="text-base lg:text-lg font-semibold text-center lg:text-left" title={user.name}>
-          {user.name.length > 18 ? user.name.slice(0, 16) + '...' : user.name}
+        <CardTitle
+          className="text-base lg:text-lg font-semibold text-center lg:text-left"
+          title={user.name}
+        >
+          {user.name
+            .split(' ')
+            .map(word =>
+              word.length > 12 ? word.slice(0, 8) + '..' : word
+            )
+            .join(' ')
+            .length > 18
+              ? user.name
+                  .split(' ')
+                  .map(word =>
+                    word.length > 12 ? word.slice(0, 8) + '..' : word
+                  )
+                  .join(' ')
+                  .slice(0, 8) + '..'
+              : user.name
+                  .split(' ')
+                  .map(word =>
+                    word.length > 12 ? word.slice(0, 8) + '..' : word
+                  )
+                  .join(' ')
+          }
         </CardTitle>
         <CardDescription
           className="text-xs lg:text-sm text-muted-foreground text-center lg:text-left"
