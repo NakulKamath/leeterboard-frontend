@@ -21,21 +21,21 @@ export default function UserCard(user: UserType) {
           {user.name
             .split(' ')
             .map(word =>
-              word.length > 12 ? word.slice(0, 8) + '..' : word
+              word.length > 10 ? word.slice(0, 8) + '..' : word
             )
             .join(' ')
             .length > 18
               ? user.name
                   .split(' ')
                   .map(word =>
-                    word.length > 12 ? word.slice(0, 8) + '..' : word
+                    word.length > 10 ? word.slice(0, 8) + '..' : word
                   )
                   .join(' ')
                   .slice(0, 8) + '..'
               : user.name
                   .split(' ')
                   .map(word =>
-                    word.length > 12 ? word.slice(0, 8) + '..' : word
+                    word.length > 10 ? word.slice(0, 8) + '..' : word
                   )
                   .join(' ')
           }
